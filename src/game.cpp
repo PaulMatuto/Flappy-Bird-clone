@@ -10,10 +10,12 @@
 #include <vector>
 
 Game::Game(SDL_Renderer* renderer)
-    :renderer(renderer),
-     background(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, renderer), foreground(0, SCREEN_HEIGHT - 78, SCREEN_WIDTH, SCREEN_HEIGHT, renderer),
+    :gameState(Start),
+     renderer(renderer),
+     background(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, renderer), 
+     foreground(0, SCREEN_HEIGHT - 78, SCREEN_WIDTH, SCREEN_HEIGHT, renderer),
      bird(SCREEN_WIDTH / 2 - BIRD_SIZE, SCREEN_HEIGHT / 2 - BIRD_SIZE, BIRD_SIZE, renderer),
-     gameLogic(bird), isAlive(true)
+     gameLogic(bird)
 {
     running = true;
 
@@ -46,15 +48,38 @@ void Game::run()
         if (event.type == SDL_QUIT)
         running = false;
         
-        if(isAlive)
+        gameState = manageState(gameState, &event);
+        
+        if(gameState == Play)
             bird.handleInput(&event);
     }
-    
-    if (!isAlive)
+
+    // State Manager
+    switch (gameState)
     {
-        for (Pipe& pipe : pipes)
-            pipe.stop();
-        foreground.stop();
+        case Start:
+            foreground.start();
+            for (int i = 0; i < pipes.size(); i++)
+            {
+                pipes[i].setX(SCREEN_WIDTH + i * (SCREEN_WIDTH + PIPE_WIDTH) / 2);
+                pipes[i].stop();
+            }
+            bird.reset();
+            SDL_Log("State: Start");
+            break;
+        case GameOver:
+            foreground.stop();
+            for (Pipe& pipe : pipes)
+                pipe.stop();
+            SDL_Log("State: GameOver");
+            break;
+        case Play:
+            foreground.start();
+            for (Pipe& pipe : pipes)
+                pipe.start();
+            bird.start();
+            SDL_Log("State: Play");
+            break;
     }
 
     SDL_RenderClear(renderer);
@@ -68,12 +93,15 @@ void Game::run()
         pipe.render();
         if (gameLogic.isColliding(pipe))
         {
-            isAlive = false;
+            gameState = GameOver;
         }
         gameLogic.isScoring(pipe);
     } 
     
-    if (bird.onGround()) isAlive = false;
+    if (bird.onGround())
+    {
+        gameState = GameOver;
+    }
 
     bird.update();
     bird.render();
@@ -87,4 +115,48 @@ void Game::run()
 bool Game::isRunning()
 {
     return running;
+}
+
+Game::State Game::manageState(Game::State gameState, SDL_Event* event)
+{
+    bool isPressed = false;
+    
+    switch (event->type)
+    {
+        case SDL_KEYDOWN:
+        switch (event->key.keysym.scancode)
+        {
+            case SDL_SCANCODE_W:
+                case SDL_SCANCODE_UP:
+                case SDL_SCANCODE_SPACE:
+                if (!event->key.repeat)
+                isPressed = true;
+                    break;
+                default:
+                    break;
+            }
+            break;
+        
+        case SDL_MOUSEBUTTONDOWN:
+            if (!event->key.repeat)
+                    isPressed = true;
+            break;
+    }
+
+    if (isPressed)
+    {
+        SDL_Log("State Changed!");
+        switch (gameState)
+        {
+            case Start:
+                return Play;
+                break;
+            case GameOver:
+                return Start;
+                break;
+            case Play:
+                break;
+        }
+    }
+    return gameState;
 }

@@ -19,6 +19,7 @@ class Pipe{
     SDL_Rect getBotRect();
     
     void setX(int x);
+    void start();
     void stop();
 
   private:

@@ -7,7 +7,12 @@
 #include <iostream>
 
 Background::Background(int x, int y, int w, int h, SDL_Renderer* renderer)
-    :x(x), y(y), w(w), h(h), speed(SCROLL_SPEED), renderer(renderer)
+    :x(x), 
+    y(y), 
+    w(w), 
+    h(h), 
+    speed(SCROLL_SPEED), 
+    renderer(renderer)
 {
 }
 
@@ -41,6 +46,11 @@ void Background::render()
 {
     SDL_RenderCopy(renderer, bgTexture, NULL, &dest1);
     SDL_RenderCopy(renderer, bgTexture, NULL, &dest2);
+}
+
+void Background::start()
+{
+    speed = SCROLL_SPEED;
 }
 
 void Background::stop()

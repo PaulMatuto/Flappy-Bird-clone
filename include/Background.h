@@ -14,6 +14,7 @@ class Background{
     void update();
     void render();
 
+    void start();
     void stop();
 
   private:

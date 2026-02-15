@@ -7,9 +7,14 @@
 #include <iostream>
 
 Bird::Bird(float x_pos, float y_pos, int size, SDL_Renderer* renderer)
-    :x_pos(x_pos), y_pos(y_pos), size(size), renderer(renderer),
+    :initialPos(y_pos),
+    x_pos(x_pos), 
+    y_pos(y_pos), 
+    size(size), 
+    renderer(renderer),
      dest({(int) x_pos, (int) y_pos, size, size}),
-     spriteCounter(0), spriteNum(1)
+     spriteCounter(0), 
+     spriteNum(1)
 {
     velocity = 0;
     acceleration = GRAVITY_MULTIPLIER * SDL_STANDARD_GRAVITY / 60.0f;
@@ -32,6 +37,23 @@ void Bird::loadTex()
 
     dest.w = size;
     dest.h = size;
+}
+
+void Bird::reset()
+{
+    y_pos = initialPos;
+    stop();
+}
+
+void Bird::start()
+{
+    acceleration = GRAVITY_MULTIPLIER * SDL_STANDARD_GRAVITY / 60.0f;
+}
+
+void Bird::stop()
+{
+    velocity = 0;
+    acceleration = 0;
 }
 
 void Bird::update()
@@ -108,17 +130,12 @@ SDL_Rect Bird::getRect()
     return dest;
 }
 
-void Bird::setVel(int vel)
-{
-    this->velocity = vel;
-}
-
 bool Bird::onGround()
 {
     int ground = SCREEN_HEIGHT - 78 - dest.h;
     if (y_pos >= ground)
     {
-        velocity = 0;
+        stop();
         y_pos = ground;
         spriteCounter = -1;
         

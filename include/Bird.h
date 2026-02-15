@@ -16,12 +16,18 @@ class Bird{
     void update();
     void render();
 
+    void start();
+    void stop();
+    void reset();
+
     bool onGround();
     
     SDL_Rect getRect();
     void setVel(int vel);
 
   private:
+    float initialPos;
+
     float x_pos, y_pos;
     float velocity;
     float acceleration;

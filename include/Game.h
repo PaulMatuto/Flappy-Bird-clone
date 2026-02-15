@@ -14,12 +14,20 @@ class Game{
   public:
     Game(SDL_Renderer* renderer);
 
+    enum State {
+      Start,
+      Play,
+      GameOver
+    };
+
     void run();
 
     bool isRunning();
+    Game::State manageState(State gameState, SDL_Event* event);
 
   private:
     bool running;
+    Game::State gameState;
   
     SDL_Renderer* renderer;
 

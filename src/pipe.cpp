@@ -86,6 +86,11 @@ SDL_Rect Pipe::getBotRect()
     return bottom;
 }
 
+void Pipe::start()
+{
+    speed = SCROLL_SPEED;
+}
+
 void Pipe::stop()
 {
     speed = 0;
