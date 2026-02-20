@@ -27,7 +27,7 @@ class Game{
     void shutdown();
 
     bool isRunning();
-    Game::State manageState(State gameState, SDL_Event* event);
+    Game::State manageState(SDL_Event* event);
 
   private:
     bool running;

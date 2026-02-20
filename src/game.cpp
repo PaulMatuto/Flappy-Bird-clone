@@ -34,7 +34,7 @@ Game::Game()
     }
 
     // Initialize the pipes
-    for (int i = 0; i < 2; i++)
+    for (size_t i = 0; i < pipes.size(); i++)
     {
         int x = SCREEN_WIDTH + i * (SCREEN_WIDTH + PIPE_WIDTH) / 2;
         pipes[i].loadTex();
@@ -133,7 +133,7 @@ void Game::run()
         if (event.type == SDL_QUIT)
         running = false;
         
-        gameState = manageState(gameState, &event);
+        gameState = manageState(&event);
         
         if(gameState == Play)
             bird->handleInput(&event);
@@ -208,7 +208,7 @@ bool Game::isRunning()
     return running;
 }
 
-Game::State Game::manageState(Game::State gameState, SDL_Event* event)
+Game::State Game::manageState(SDL_Event* event)
 {
     bool isPressed = false;
     
