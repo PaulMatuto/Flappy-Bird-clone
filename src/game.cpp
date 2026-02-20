@@ -171,6 +171,8 @@ void Game::run()
     SDL_RenderClear(renderer);
     
     background->update();
+    bird->update();
+    
     background->render();
     
     for (Pipe& pipe : pipes)
@@ -182,18 +184,17 @@ void Game::run()
             gameState = GameOver;
         }
         if (gameLogic->isScoring(pipe) && gameState == Play)
-            score++;
+        score++;
     } 
     
     if (bird->onGround())
     {
         gameState = GameOver;
     }
-
-    bird->update();
-    bird->render();
-
+    
     foreground->update();
+    
+    bird->render();
     foreground->render();
     
     if (gameState == Play || gameState == GameOver)

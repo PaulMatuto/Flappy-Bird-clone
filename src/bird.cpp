@@ -68,6 +68,14 @@ void Bird::update()
         velocity = 0;
     }
     
+    int ground = SCREEN_HEIGHT - 78 - dest.h;
+    if (y_pos >= ground)
+    {
+        y_pos = ground;
+        stop();
+        spriteCounter = -1;
+    }
+
     dest.x = x_pos;
     dest.y = y_pos;
 }
@@ -134,10 +142,6 @@ bool Bird::onGround()
     int ground = SCREEN_HEIGHT - 78 - dest.h;
     if (y_pos >= ground)
     {
-        stop();
-        y_pos = ground;
-        spriteCounter = -1;
-        
         return true;
     }   
     return false; 
