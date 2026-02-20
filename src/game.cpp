@@ -188,8 +188,10 @@ void Game::RenderScore()
 
     SDL_Texture* scoreTexture = SDL_CreateTextureFromSurface(renderer, score_surface);
     if (!scoreTexture)
+    {
         SDL_FreeSurface(score_surface);
         return;
+    }
 
     SDL_Rect score_Rect;
     SDL_QueryTexture(scoreTexture, NULL, NULL, &score_Rect.w, &score_Rect.h);
@@ -201,4 +203,12 @@ void Game::RenderScore()
     SDL_RenderCopy(renderer, scoreTexture, NULL, &score_Rect);
 
     SDL_DestroyTexture(scoreTexture);
+}
+
+Game::~Game()
+{
+    if (font)
+        TTF_CloseFont(font);
+
+    font = nullptr;
 }
