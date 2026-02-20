@@ -228,8 +228,7 @@ Game::State Game::manageState(Game::State gameState, SDL_Event* event)
         break;
     
     case SDL_MOUSEBUTTONDOWN:
-        if (!event->key.repeat)
-                isPressed = true;
+        isPressed = true;
         break;
     }
 

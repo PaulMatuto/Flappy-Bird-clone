@@ -114,8 +114,7 @@ void Bird::handleInput(SDL_Event* event)
         break;
     
     case SDL_MOUSEBUTTONDOWN:
-        if (!event->key.repeat)
-                isPressed = true;
+        isPressed = true;
         break;
     }
 
