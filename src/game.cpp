@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 #include "Game.h"
 #include "GameLogic.h"
@@ -15,7 +16,8 @@ Game::Game(SDL_Renderer* renderer)
      background(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, renderer), 
      foreground(0, SCREEN_HEIGHT - 78, SCREEN_WIDTH, SCREEN_HEIGHT, renderer),
      bird(SCREEN_WIDTH / 2 - BIRD_SIZE, SCREEN_HEIGHT / 2 - BIRD_SIZE, BIRD_SIZE, renderer),
-     gameLogic(bird)
+     gameLogic(bird),
+     textColor({255, 255, 255, 255})
 {
     running = true;
 
@@ -37,6 +39,18 @@ Game::Game(SDL_Renderer* renderer)
     }
 
     bird.loadTex();
+
+    // Load the Font
+    fontSize = 60;
+    font = TTF_OpenFont("res/fonts/flappy-font.ttf", fontSize);
+    if (!font)
+    {
+        std::cout << "Error Opening Font: " << TTF_GetError() << std::endl;
+        TTF_Quit();
+        return;
+    }
+
+    score = 0;
 }
 
 // Game Loop
@@ -59,12 +73,13 @@ void Game::run()
     {
         case Start:
             foreground.start();
-            for (int i = 0; i < pipes.size(); i++)
+            for (int i = 0; i < 2; i++)
             {
                 pipes[i].setX(SCREEN_WIDTH + i * (SCREEN_WIDTH + PIPE_WIDTH) / 2);
                 pipes[i].stop();
             }
             bird.reset();
+            score = 0;
             SDL_Log("State: Start");
             break;
         case GameOver:
@@ -95,7 +110,8 @@ void Game::run()
         {
             gameState = GameOver;
         }
-        gameLogic.isScoring(pipe);
+        if (gameLogic.isScoring(pipe) && gameState == Play)
+            score++;
     } 
     
     if (bird.onGround())
@@ -109,6 +125,9 @@ void Game::run()
     foreground.update();
     foreground.render();
     
+    if (gameState == Play || gameState == GameOver)
+        RenderScore();
+
     SDL_RenderPresent(renderer);
 }
 
@@ -159,4 +178,26 @@ Game::State Game::manageState(Game::State gameState, SDL_Event* event)
         }
     }
     return gameState;
+}
+
+void Game::RenderScore()
+{
+    SDL_Surface* score_surface = TTF_RenderText_Solid(font, std::to_string(score).c_str(), textColor);
+    if (!score_surface)
+        return;
+
+    SDL_Texture* scoreTexture = SDL_CreateTextureFromSurface(renderer, score_surface);
+    if (!scoreTexture)
+        return;
+
+    SDL_Rect score_Rect;
+    SDL_QueryTexture(scoreTexture, NULL, NULL, &score_Rect.w, &score_Rect.h);
+
+    score_Rect.x = SCREEN_WIDTH / 2 - score_Rect.w / 2;
+    score_Rect.y = fontSize;
+
+    SDL_FreeSurface(score_surface);
+    SDL_RenderCopy(renderer, scoreTexture, NULL, &score_Rect);
+
+    SDL_DestroyTexture(scoreTexture);
 }

@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 
 #include "Game.h"
 #include "Background.h"
@@ -9,9 +10,16 @@
 
 int main(int argc, char* argv[])
 {
-    if(SDL_Init(SDL_INIT_EVERYTHING))
+    if(SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {   
         std::cerr << "SDL has failed to initialize. Error: " << SDL_GetError() << std::endl;
+        return 1;
+    }
+
+    if (TTF_Init() != 0)
+    {
+        std::cerr << "SDL_ttf has failed to initialize. Error: " << SDL_GetError() << std::endl;
+        SDL_Quit();
         return 1;
     }
     
@@ -19,6 +27,7 @@ int main(int argc, char* argv[])
     if(!window)
     {   
         std::cerr << "SDL failed to create a window. Error: " << SDL_GetError() << std::endl;
+        TTF_Quit();
         SDL_Quit();
         return 1;
     }
@@ -28,6 +37,7 @@ int main(int argc, char* argv[])
     {   
         std::cerr << "SDL failed to create a renderer. Error: " << SDL_GetError() << std::endl;
         SDL_DestroyWindow(window);
+        TTF_Quit();
         SDL_Quit();
         return 1;
     }
@@ -46,6 +56,7 @@ int main(int argc, char* argv[])
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    TTF_Quit();
     SDL_Quit();
 
     return 0;

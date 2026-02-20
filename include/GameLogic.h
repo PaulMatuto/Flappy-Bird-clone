@@ -12,7 +12,6 @@ class GameLogic{
 
     bool isColliding(Pipe& pipe);
     bool isScoring(Pipe& pipe);
-    bool onGround();
 
   private:
     Bird& bird;

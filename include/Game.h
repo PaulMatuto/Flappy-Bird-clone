@@ -21,6 +21,7 @@ class Game{
     };
 
     void run();
+    void RenderScore();
 
     bool isRunning();
     Game::State manageState(State gameState, SDL_Event* event);
@@ -41,4 +42,8 @@ class Game{
 
     bool isAlive;
 
+    int fontSize;
+    int score;
+    SDL_Color textColor;
+    TTF_Font* font;
 };
