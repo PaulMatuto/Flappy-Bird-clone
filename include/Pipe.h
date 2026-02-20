@@ -35,6 +35,4 @@ class Pipe{
     SDL_Texture* botTex;
     SDL_Rect top;
     SDL_Rect bottom;
-
-    bool scored;
 };

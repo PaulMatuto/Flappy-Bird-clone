@@ -43,8 +43,6 @@ class Game{
     
     std::vector<Pipe> pipes;
     
-    bool isAlive;
-    
     int fontSize;
     int score;
     SDL_Color textColor;

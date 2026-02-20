@@ -18,8 +18,6 @@ Pipe::Pipe(SDL_Renderer& renderer, int screenWidth, int screenHeight, int gap)
      bottom({0, 0, 0, 0})
 {
     threshold = PIPE_MIN_MARGIN;
-
-    scored = false;
 }
 
 void Pipe::loadTex()
@@ -65,8 +63,6 @@ void Pipe::update()
         top.y = randomY - top.h;
         bottom.x = top.x;
         bottom.y = top.y + top.h + gap;
-
-        scored = false;
     }
 }
 

@@ -19,6 +19,4 @@ class GameLogic{
     SDL_Rect birdRect;
     SDL_Rect pipeTopRect;
     SDL_Rect pipeBotRect;
-    
-    int ground;
 };
