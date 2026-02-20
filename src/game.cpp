@@ -71,30 +71,30 @@ void Game::run()
     // State Manager
     switch (gameState)
     {
-        case Start:
-            foreground.start();
-            for (int i = 0; i < 2; i++)
-            {
-                pipes[i].setX(SCREEN_WIDTH + i * (SCREEN_WIDTH + PIPE_WIDTH) / 2);
-                pipes[i].stop();
-            }
-            bird.reset();
-            score = 0;
-            SDL_Log("State: Start");
-            break;
-        case GameOver:
-            foreground.stop();
-            for (Pipe& pipe : pipes)
-                pipe.stop();
-            SDL_Log("State: GameOver");
-            break;
-        case Play:
-            foreground.start();
-            for (Pipe& pipe : pipes)
-                pipe.start();
-            bird.start();
-            SDL_Log("State: Play");
-            break;
+    case Start:
+        foreground.start();
+        for (int i = 0; i < 2; i++)
+        {
+            pipes[i].setX(SCREEN_WIDTH + i * (SCREEN_WIDTH + PIPE_WIDTH) / 2);
+            pipes[i].stop();
+        }
+        bird.reset();
+        score = 0;
+        SDL_Log("State: Start");
+        break;
+    case GameOver:
+        foreground.stop();
+        for (Pipe& pipe : pipes)
+            pipe.stop();
+        SDL_Log("State: GameOver");
+        break;
+    case Play:
+        foreground.start();
+        for (Pipe& pipe : pipes)
+            pipe.start();
+        bird.start();
+        SDL_Log("State: Play");
+        break;
     }
 
     SDL_RenderClear(renderer);
@@ -142,24 +142,24 @@ Game::State Game::manageState(Game::State gameState, SDL_Event* event)
     
     switch (event->type)
     {
-        case SDL_KEYDOWN:
-        switch (event->key.keysym.scancode)
-        {
-            case SDL_SCANCODE_W:
-                case SDL_SCANCODE_UP:
-                case SDL_SCANCODE_SPACE:
-                if (!event->key.repeat)
-                isPressed = true;
-                    break;
-                default:
-                    break;
-            }
-            break;
-        
-        case SDL_MOUSEBUTTONDOWN:
+    case SDL_KEYDOWN:
+    switch (event->key.keysym.scancode)
+    {
+        case SDL_SCANCODE_W:
+            case SDL_SCANCODE_UP:
+            case SDL_SCANCODE_SPACE:
             if (!event->key.repeat)
-                    isPressed = true;
-            break;
+            isPressed = true;
+                break;
+            default:
+                break;
+        }
+        break;
+    
+    case SDL_MOUSEBUTTONDOWN:
+        if (!event->key.repeat)
+                isPressed = true;
+        break;
     }
 
     if (isPressed)
@@ -167,14 +167,14 @@ Game::State Game::manageState(Game::State gameState, SDL_Event* event)
         SDL_Log("State Changed!");
         switch (gameState)
         {
-            case Start:
-                return Play;
-                break;
-            case GameOver:
-                return Start;
-                break;
-            case Play:
-                break;
+        case Start:
+            return Play;
+            break;
+        case GameOver:
+            return Start;
+            break;
+        case Play:
+            break;
         }
     }
     return gameState;
@@ -188,6 +188,7 @@ void Game::RenderScore()
 
     SDL_Texture* scoreTexture = SDL_CreateTextureFromSurface(renderer, score_surface);
     if (!scoreTexture)
+        SDL_FreeSurface(score_surface);
         return;
 
     SDL_Rect score_Rect;

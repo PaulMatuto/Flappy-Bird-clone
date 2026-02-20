@@ -12,9 +12,9 @@ Bird::Bird(float x_pos, float y_pos, int size, SDL_Renderer* renderer)
     y_pos(y_pos), 
     size(size), 
     renderer(renderer),
-     dest({(int) x_pos, (int) y_pos, size, size}),
-     spriteCounter(0), 
-     spriteNum(1)
+    dest({(int) x_pos, (int) y_pos, size, size}),
+    spriteCounter(0), 
+    spriteNum(1)
 {
     velocity = 0;
     acceleration = GRAVITY_MULTIPLIER * SDL_STANDARD_GRAVITY / 60.0f;
@@ -99,24 +99,24 @@ void Bird::handleInput(SDL_Event* event)
     
     switch (event->type)
     {
-        case SDL_KEYDOWN:
+    case SDL_KEYDOWN:
         switch (event->key.keysym.scancode)
         {
-            case SDL_SCANCODE_W:
-                case SDL_SCANCODE_UP:
-                case SDL_SCANCODE_SPACE:
-                if (!event->key.repeat)
-                isPressed = true;
-                    break;
-                default:
-                    break;
-            }
-            break;
-        
-        case SDL_MOUSEBUTTONDOWN:
+        case SDL_SCANCODE_W:
+            case SDL_SCANCODE_UP:
+            case SDL_SCANCODE_SPACE:
             if (!event->key.repeat)
-                    isPressed = true;
-            break;
+            isPressed = true;
+                break;
+            default:
+                break;
+        }
+        break;
+    
+    case SDL_MOUSEBUTTONDOWN:
+        if (!event->key.repeat)
+                isPressed = true;
+        break;
     }
 
     if (isPressed)
