@@ -17,43 +17,6 @@ Game::Game()
     running = true;
 
     init();
-    
-    background = new Background(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, *renderer);
-    foreground = new Background(0, SCREEN_HEIGHT - 78, SCREEN_WIDTH, SCREEN_HEIGHT, *renderer);
-    bird = new Bird(SCREEN_WIDTH / 2 - BIRD_SIZE, SCREEN_HEIGHT / 2 - BIRD_SIZE, BIRD_SIZE, *renderer);
-    gameLogic = new GameLogic(*bird);
-
-
-    background->loadTex("res/Background.png");
-    foreground->loadTex("res/Ground.png");
-    
-    // Create pipe objects first to prevent reallocation
-    for (int i = 0; i < 2; i++)
-    {
-        pipes.emplace_back(*renderer, SCREEN_WIDTH, SCREEN_HEIGHT, PIPE_GAP);
-    }
-
-    // Initialize the pipes
-    for (size_t i = 0; i < pipes.size(); i++)
-    {
-        int x = SCREEN_WIDTH + i * (SCREEN_WIDTH + PIPE_WIDTH) / 2;
-        pipes[i].loadTex();
-        pipes[i].setX(x);
-    }
-
-    bird->loadTex();
-
-    // Load the Font
-    fontSize = 60;
-    font = TTF_OpenFont("res/fonts/flappy-font.ttf", fontSize);
-    if (!font)
-    {
-        std::cout << "Error Opening Font: " << TTF_GetError() << std::endl;
-        TTF_Quit();
-        return;
-    }
-
-    score = 0;
 }
 
 void Game::init()
@@ -122,6 +85,43 @@ void Game::init()
     SDL_Log("SDL_IMG loaded %s successfully!", iconPath);
     SDL_SetWindowIcon(window, iconSurf);
     SDL_FreeSurface(iconSurf);
+    
+    background = new Background(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, *renderer);
+    foreground = new Background(0, SCREEN_HEIGHT - 78, SCREEN_WIDTH, SCREEN_HEIGHT, *renderer);
+    bird = new Bird(SCREEN_WIDTH / 2 - BIRD_SIZE, SCREEN_HEIGHT / 2 - BIRD_SIZE, BIRD_SIZE, *renderer);
+    gameLogic = new GameLogic(*bird);
+
+
+    background->loadTex("res/Background.png");
+    foreground->loadTex("res/Ground.png");
+    
+    // Create pipe objects first to prevent reallocation
+    for (int i = 0; i < 2; i++)
+    {
+        pipes.emplace_back(*renderer, SCREEN_WIDTH, SCREEN_HEIGHT, PIPE_GAP);
+    }
+
+    // Initialize the pipes
+    for (size_t i = 0; i < pipes.size(); i++)
+    {
+        int x = SCREEN_WIDTH + i * (SCREEN_WIDTH + PIPE_WIDTH) / 2;
+        pipes[i].loadTex();
+        pipes[i].setX(x);
+    }
+
+    bird->loadTex();
+
+    // Load the Font
+    fontSize = 60;
+    font = TTF_OpenFont("res/fonts/flappy-font.ttf", fontSize);
+    if (!font)
+    {
+        std::cout << "Error Opening Font: " << TTF_GetError() << std::endl;
+        TTF_Quit();
+        return;
+    }
+
+    score = 0;
 }
 
 // Game Loop
