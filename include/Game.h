@@ -12,7 +12,7 @@
 
 class Game{
   public:
-    Game(SDL_Renderer& renderer);
+    Game();
     ~Game();
 
     enum State {
@@ -21,30 +21,34 @@ class Game{
       GameOver
     };
 
+    void init();
     void run();
     void RenderScore();
+    void shutdown();
 
     bool isRunning();
     Game::State manageState(State gameState, SDL_Event* event);
 
   private:
     bool running;
-    Game::State gameState;
-  
+    
+    SDL_Window* window;
     SDL_Renderer* renderer;
-
-    Background background;
-    Background foreground;
-    Bird bird;
-
-    GameLogic gameLogic;
+    
+    Background* background;
+    Background* foreground;
+    Bird* bird;
+    
+    GameLogic* gameLogic;
     
     std::vector<Pipe> pipes;
-
+    
     bool isAlive;
-
+    
     int fontSize;
     int score;
     SDL_Color textColor;
     TTF_Font* font;
+
+    Game::State gameState;
 };

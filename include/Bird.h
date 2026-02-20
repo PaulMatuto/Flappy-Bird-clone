@@ -33,7 +33,7 @@ class Bird{
     float acceleration;
     int size;
     
-    SDL_Renderer* renderer;
+    SDL_Renderer& renderer;
     SDL_Texture* birdTex1;
     SDL_Texture* birdTex2;
     SDL_Rect dest;

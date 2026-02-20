@@ -22,7 +22,7 @@ class Background{
     int w, h;
     int speed;
 
-    SDL_Renderer* renderer;
+    SDL_Renderer& renderer;
     SDL_Texture* bgTexture;
     SDL_Rect dest1;
     SDL_Rect dest2;

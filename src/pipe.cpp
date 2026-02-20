@@ -7,7 +7,7 @@
 #include <iostream>
 
 Pipe::Pipe(SDL_Renderer& renderer, int screenWidth, int screenHeight, int gap)
-    :renderer(&renderer), 
+    :renderer(renderer), 
      screenWidth(screenWidth), 
      screenHeight(screenHeight), 
      gap(gap),
@@ -24,13 +24,13 @@ Pipe::Pipe(SDL_Renderer& renderer, int screenWidth, int screenHeight, int gap)
 
 void Pipe::loadTex()
 {
-    topTex = IMG_LoadTexture(renderer, "res/Pipe1.png");
+    topTex = IMG_LoadTexture(&renderer, "res/Pipe1.png");
     if (!topTex) {
         std::cerr << "Failed to load Pipe1.png: " << IMG_GetError() << std::endl;
         return;
     }
 
-    botTex = IMG_LoadTexture(renderer, "res/Pipe2.png");
+    botTex = IMG_LoadTexture(&renderer, "res/Pipe2.png");
     if (!botTex) {
         std::cerr << "Failed to load Pipe2.png: " << IMG_GetError() << std::endl;
         return;
@@ -72,8 +72,8 @@ void Pipe::update()
 
 void Pipe::render()
 {
-    SDL_RenderCopy(renderer, topTex, NULL, &top);
-    SDL_RenderCopy(renderer, botTex, NULL, &bottom);
+    SDL_RenderCopy(&renderer, topTex, NULL, &top);
+    SDL_RenderCopy(&renderer, botTex, NULL, &bottom);
 }
 
 SDL_Rect Pipe::getTopRect()

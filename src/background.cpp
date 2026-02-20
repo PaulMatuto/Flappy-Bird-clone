@@ -12,13 +12,13 @@ Background::Background(int x, int y, int w, int h, SDL_Renderer& renderer)
     w(w), 
     h(h), 
     speed(SCROLL_SPEED), 
-    renderer(&renderer)
+    renderer(renderer)
 {
 }
 
 void Background::loadTex(const char* path)
 {
-    bgTexture = IMG_LoadTexture(renderer, path);
+    bgTexture = IMG_LoadTexture(&renderer, path);
     if (!bgTexture) {
         std::cerr << "Failed to load Background.png: " << IMG_GetError() << std::endl;
         return;
@@ -44,8 +44,8 @@ void Background::update()
 
 void Background::render()
 {
-    SDL_RenderCopy(renderer, bgTexture, NULL, &dest1);
-    SDL_RenderCopy(renderer, bgTexture, NULL, &dest2);
+    SDL_RenderCopy(&renderer, bgTexture, NULL, &dest1);
+    SDL_RenderCopy(&renderer, bgTexture, NULL, &dest2);
 }
 
 void Background::start()

@@ -23,7 +23,7 @@ class Pipe{
     void stop();
 
   private:
-    SDL_Renderer* renderer;
+    SDL_Renderer& renderer;
     
     int screenWidth;
     int screenHeight;

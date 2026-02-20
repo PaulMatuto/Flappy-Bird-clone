@@ -10,24 +10,27 @@
 #include <iostream>
 #include <vector>
 
-Game::Game(SDL_Renderer& renderer)
-    :gameState(Start),
-     renderer(&renderer),
-     background(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, renderer), 
-     foreground(0, SCREEN_HEIGHT - 78, SCREEN_WIDTH, SCREEN_HEIGHT, renderer),
-     bird(SCREEN_WIDTH / 2 - BIRD_SIZE, SCREEN_HEIGHT / 2 - BIRD_SIZE, BIRD_SIZE, renderer),
-     gameLogic(bird),
-     textColor({255, 255, 255, 255})
+Game::Game()
+    :textColor({255, 255, 255, 255}),
+     gameState(Start)
 {
     running = true;
 
-    background.loadTex("res/Background.png");
-    foreground.loadTex("res/Ground.png");
+    init();
+    
+    background = new Background(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, *renderer);
+    foreground = new Background(0, SCREEN_HEIGHT - 78, SCREEN_WIDTH, SCREEN_HEIGHT, *renderer);
+    bird = new Bird(SCREEN_WIDTH / 2 - BIRD_SIZE, SCREEN_HEIGHT / 2 - BIRD_SIZE, BIRD_SIZE, *renderer);
+    gameLogic = new GameLogic(*bird);
+
+
+    background->loadTex("res/Background.png");
+    foreground->loadTex("res/Ground.png");
     
     // Create pipe objects first to prevent reallocation
     for (int i = 0; i < 2; i++)
     {
-        pipes.emplace_back(renderer, SCREEN_WIDTH, SCREEN_HEIGHT, PIPE_GAP);
+        pipes.emplace_back(*renderer, SCREEN_WIDTH, SCREEN_HEIGHT, PIPE_GAP);
     }
 
     // Initialize the pipes
@@ -38,7 +41,7 @@ Game::Game(SDL_Renderer& renderer)
         pipes[i].setX(x);
     }
 
-    bird.loadTex();
+    bird->loadTex();
 
     // Load the Font
     fontSize = 60;
@@ -53,6 +56,74 @@ Game::Game(SDL_Renderer& renderer)
     score = 0;
 }
 
+void Game::init()
+{
+    if(SDL_Init(SDL_INIT_VIDEO) != 0)
+    {   
+        SDL_Log("SDL has failed to initialize. Error: %s", SDL_GetError());
+        return;
+    }
+    SDL_Log("SDL has initialized successfully");
+
+    if (IMG_Init(IMG_INIT_PNG) == 0)
+    {
+        SDL_Log("SDL_IMG has failed to initialize. Error: %s", IMG_GetError());
+        SDL_Quit();
+        return;
+    }
+    SDL_Log("SDL_IMG has initialized successfully!");
+
+    if (TTF_Init() != 0)
+    {
+        SDL_Log("SDL_TTF has failed to initialize. Error: %s", TTF_GetError());
+        IMG_Quit();
+        SDL_Quit();
+        return;
+    }
+    SDL_Log("SDL_TTF has initialized successfully!");
+    
+    window = SDL_CreateWindow("Flappy Bird!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+    if(!window)
+    {   
+        SDL_Log("SDL failed to create a window. Error: %s", SDL_GetError());
+        TTF_Quit();
+        IMG_Quit();
+        IMG_Quit();
+        SDL_Quit();
+        return;
+    }
+    SDL_Log("SDL created a window successfully!");
+    
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    if(!renderer)
+    {   
+        SDL_Log("SDL failed to create a renderer. Error: %s", SDL_GetError());
+        SDL_DestroyWindow(window);
+        TTF_Quit();
+        IMG_Quit();
+        SDL_Quit();
+        return;
+    }
+    SDL_Log("SDL created a renderer successfully!");
+
+    // Game Icon
+    const char* iconPath = "res/Icon.png";
+    SDL_Surface* iconSurf = IMG_Load(iconPath);
+    if (!iconSurf)
+    {
+        SDL_Log("SDL_IMG failed to load %s . Error: %s", iconPath, SDL_GetError());
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        TTF_Quit();
+        IMG_Quit();
+        SDL_Quit();
+        return;
+    }
+    SDL_Log("SDL_IMG loaded %s successfully!", iconPath);
+    SDL_SetWindowIcon(window, iconSurf);
+    SDL_FreeSurface(iconSurf);
+}
+
 // Game Loop
 void Game::run()
 {
@@ -65,65 +136,65 @@ void Game::run()
         gameState = manageState(gameState, &event);
         
         if(gameState == Play)
-            bird.handleInput(&event);
+            bird->handleInput(&event);
     }
 
     // State Manager
     switch (gameState)
     {
     case Start:
-        foreground.start();
+        foreground->start();
         for (int i = 0; i < 2; i++)
         {
             pipes[i].setX(SCREEN_WIDTH + i * (SCREEN_WIDTH + PIPE_WIDTH) / 2);
             pipes[i].stop();
         }
-        bird.reset();
+        bird->reset();
         score = 0;
         SDL_Log("State: Start");
         break;
     case GameOver:
-        foreground.stop();
+        foreground->stop();
         for (Pipe& pipe : pipes)
             pipe.stop();
         SDL_Log("State: GameOver");
         break;
     case Play:
-        foreground.start();
+        foreground->start();
         for (Pipe& pipe : pipes)
             pipe.start();
-        bird.start();
+        bird->start();
         SDL_Log("State: Play");
         break;
     }
 
     SDL_RenderClear(renderer);
     
-    background.update();
-    background.render();
+    background->update();
+    background->render();
     
     for (Pipe& pipe : pipes)
     {
         pipe.update();
         pipe.render();
-        if (gameLogic.isColliding(pipe))
+        if (gameLogic->isColliding(pipe))
         {
             gameState = GameOver;
         }
-        if (gameLogic.isScoring(pipe) && gameState == Play)
+        if (gameLogic->isScoring(pipe) && gameState == Play)
             score++;
     } 
     
-    if (bird.onGround())
+    if (bird->onGround())
     {
         gameState = GameOver;
     }
 
-    bird.update();
-    bird.render();
+    bird->update();
+    bird->render();
 
-    foreground.update();
-    foreground.render();
+    foreground->update();
+    foreground->render();
     
     if (gameState == Play || gameState == GameOver)
         RenderScore();
@@ -178,6 +249,14 @@ Game::State Game::manageState(Game::State gameState, SDL_Event* event)
         }
     }
     return gameState;
+}
+
+void Game::shutdown()
+{
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    TTF_Quit();
+    SDL_Quit();
 }
 
 void Game::RenderScore()

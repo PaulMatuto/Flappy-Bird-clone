@@ -11,7 +11,7 @@ Bird::Bird(float x_pos, float y_pos, int size, SDL_Renderer& renderer)
     x_pos(x_pos), 
     y_pos(y_pos), 
     size(size), 
-    renderer(&renderer),
+    renderer(renderer),
     dest({(int) x_pos, (int) y_pos, size, size}),
     spriteCounter(0), 
     spriteNum(1)
@@ -23,13 +23,13 @@ Bird::Bird(float x_pos, float y_pos, int size, SDL_Renderer& renderer)
 
 void Bird::loadTex()
 {
-    birdTex1 = IMG_LoadTexture(renderer, "res/bird1.png");
+    birdTex1 = IMG_LoadTexture(&renderer, "res/bird1.png");
     if (!birdTex1) {
         std::cerr << "Failed to load Bird1.png: " << IMG_GetError() << std::endl;
         return;
     }
     
-    birdTex2 = IMG_LoadTexture(renderer, "res/bird2.png");
+    birdTex2 = IMG_LoadTexture(&renderer, "res/bird2.png");
     if (!birdTex2) {
         std::cerr << "Failed to load Bird2.png: " << IMG_GetError() << std::endl;
         return;
@@ -89,8 +89,8 @@ void Bird::render()
     }
     if (velocity <= 5) spriteCounter++;    
 
-    if (spriteNum == 1) SDL_RenderCopy(renderer, birdTex1, NULL, &dest);
-    if (spriteNum == 2) SDL_RenderCopy(renderer, birdTex2, NULL, &dest);
+    if (spriteNum == 1) SDL_RenderCopy(&renderer, birdTex1, NULL, &dest);
+    if (spriteNum == 2) SDL_RenderCopy(&renderer, birdTex2, NULL, &dest);
 }
 
 void Bird::handleInput(SDL_Event* event)
