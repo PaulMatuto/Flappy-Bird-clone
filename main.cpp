@@ -75,7 +75,7 @@ int main(int argc, char* argv[])
     SDL_SetWindowIcon(window, iconSurf);
     SDL_FreeSurface(iconSurf);
 
-    Game game = Game(renderer);
+    Game game = Game(*renderer);
 
     while (game.isRunning())
     {   

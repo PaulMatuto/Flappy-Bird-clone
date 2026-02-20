@@ -7,7 +7,7 @@
 
 class Pipe{
   public:
-    Pipe(SDL_Renderer* renderer, int screenWidth, int screenHeight, int gap);
+    Pipe(SDL_Renderer& renderer, int screenWidth, int screenHeight, int gap);
     ~Pipe();
 
     void loadTex();

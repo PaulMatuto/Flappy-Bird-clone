@@ -7,7 +7,7 @@
 
 class Bird{
   public:
-    Bird(float x_pos, float y_pos, int size, SDL_Renderer* renderer);
+    Bird(float x_pos, float y_pos, int size, SDL_Renderer& renderer);
     ~Bird();
 
     void loadTex();

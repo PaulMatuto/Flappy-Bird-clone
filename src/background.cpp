@@ -6,13 +6,13 @@
 
 #include <iostream>
 
-Background::Background(int x, int y, int w, int h, SDL_Renderer* renderer)
+Background::Background(int x, int y, int w, int h, SDL_Renderer& renderer)
     :x(x), 
     y(y), 
     w(w), 
     h(h), 
     speed(SCROLL_SPEED), 
-    renderer(renderer)
+    renderer(&renderer)
 {
 }
 

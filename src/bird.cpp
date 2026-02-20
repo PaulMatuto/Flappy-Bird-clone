@@ -6,12 +6,12 @@
 
 #include <iostream>
 
-Bird::Bird(float x_pos, float y_pos, int size, SDL_Renderer* renderer)
+Bird::Bird(float x_pos, float y_pos, int size, SDL_Renderer& renderer)
     :initialPos(y_pos),
     x_pos(x_pos), 
     y_pos(y_pos), 
     size(size), 
-    renderer(renderer),
+    renderer(&renderer),
     dest({(int) x_pos, (int) y_pos, size, size}),
     spriteCounter(0), 
     spriteNum(1)

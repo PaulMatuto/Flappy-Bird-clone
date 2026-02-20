@@ -6,7 +6,7 @@
 
 class Background{
   public:
-    Background(int x, int y, int w, int h, SDL_Renderer* renderer);
+    Background(int x, int y, int w, int h, SDL_Renderer& renderer);
     ~Background();
 
     void loadTex(const char* path);

@@ -12,7 +12,7 @@
 
 class Game{
   public:
-    Game(SDL_Renderer* renderer);
+    Game(SDL_Renderer& renderer);
     ~Game();
 
     enum State {

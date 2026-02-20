@@ -6,8 +6,8 @@
 
 #include <iostream>
 
-Pipe::Pipe(SDL_Renderer* renderer, int screenWidth, int screenHeight, int gap)
-    :renderer(renderer), 
+Pipe::Pipe(SDL_Renderer& renderer, int screenWidth, int screenHeight, int gap)
+    :renderer(&renderer), 
      screenWidth(screenWidth), 
      screenHeight(screenHeight), 
      gap(gap),

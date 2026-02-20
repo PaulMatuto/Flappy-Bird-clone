@@ -10,9 +10,9 @@
 #include <iostream>
 #include <vector>
 
-Game::Game(SDL_Renderer* renderer)
+Game::Game(SDL_Renderer& renderer)
     :gameState(Start),
-     renderer(renderer),
+     renderer(&renderer),
      background(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, renderer), 
      foreground(0, SCREEN_HEIGHT - 78, SCREEN_WIDTH, SCREEN_HEIGHT, renderer),
      bird(SCREEN_WIDTH / 2 - BIRD_SIZE, SCREEN_HEIGHT / 2 - BIRD_SIZE, BIRD_SIZE, renderer),
