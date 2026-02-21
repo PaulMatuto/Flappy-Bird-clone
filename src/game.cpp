@@ -12,6 +12,7 @@
 
 Game::Game()
     :textColor({255, 255, 255, 255}),
+     scoreTex(nullptr),
      gameState(Start)
 {
     running = true;
@@ -121,7 +122,8 @@ void Game::init()
         return;
     }
 
-    score = 0;
+    // Start with -1 so the score will still update textures when initial score is 0
+    score = -1;
 }
 
 // Game Loop
@@ -138,6 +140,8 @@ void Game::run()
         if(gameState == Play)
             bird->handleInput(&event);
     }
+
+    int previousScore = score;
 
     // State Manager
     switch (gameState)
@@ -197,8 +201,14 @@ void Game::run()
     bird->render();
     foreground->render();
     
+    if (previousScore != score)
+    {
+        updateScoreTextures(scoreTex);
+        previousScore = score;
+    }
+
     if (gameState == Play || gameState == GameOver)
-        RenderScore();
+        RenderScore(scoreTex);
 
     SDL_RenderPresent(renderer);
 }
@@ -259,29 +269,31 @@ void Game::shutdown()
     SDL_Quit();
 }
 
-void Game::RenderScore()
+void Game::updateScoreTextures(SDL_Texture* &scoreTex)
 {
     SDL_Surface* score_surface = TTF_RenderText_Solid(font, std::to_string(score).c_str(), textColor);
     if (!score_surface)
         return;
 
-    SDL_Texture* scoreTexture = SDL_CreateTextureFromSurface(renderer, score_surface);
-    if (!scoreTexture)
+    scoreTex = SDL_CreateTextureFromSurface(renderer, score_surface);
+    if (!scoreTex)
     {
         SDL_FreeSurface(score_surface);
         return;
     }
 
+    SDL_FreeSurface(score_surface);
+}
+
+void Game::RenderScore(SDL_Texture* scoreTex)
+{
     SDL_Rect score_Rect;
-    SDL_QueryTexture(scoreTexture, NULL, NULL, &score_Rect.w, &score_Rect.h);
+    SDL_QueryTexture(scoreTex, NULL, NULL, &score_Rect.w, &score_Rect.h);
 
     score_Rect.x = SCREEN_WIDTH / 2 - score_Rect.w / 2;
     score_Rect.y = fontSize;
-
-    SDL_FreeSurface(score_surface);
-    SDL_RenderCopy(renderer, scoreTexture, NULL, &score_Rect);
-
-    SDL_DestroyTexture(scoreTexture);
+    
+    SDL_RenderCopy(renderer, scoreTex, NULL, &score_Rect);
 }
 
 Game::~Game()
@@ -290,4 +302,9 @@ Game::~Game()
         TTF_CloseFont(font);
 
     font = nullptr;
+
+    if (scoreTex)
+        SDL_DestroyTexture(scoreTex);
+
+    scoreTex = nullptr;
 }

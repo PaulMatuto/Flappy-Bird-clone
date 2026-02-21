@@ -23,7 +23,8 @@ class Game{
 
     void init();
     void run();
-    void RenderScore();
+    void updateScoreTextures(SDL_Texture* &scoreTex);
+    void RenderScore(SDL_Texture* scoreTex);
     void shutdown();
 
     bool isRunning();
@@ -47,6 +48,8 @@ class Game{
     int score;
     SDL_Color textColor;
     TTF_Font* font;
+
+    SDL_Texture* scoreTex;
 
     Game::State gameState;
 };
