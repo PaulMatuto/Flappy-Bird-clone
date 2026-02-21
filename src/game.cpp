@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 
 #include "Game.h"
@@ -92,9 +93,9 @@ void Game::init()
     bird = new Bird(SCREEN_WIDTH / 2 - BIRD_SIZE, SCREEN_HEIGHT / 2 - BIRD_SIZE, BIRD_SIZE, *renderer);
     gameLogic = new GameLogic(*bird);
 
-
     background->loadTex("res/Background.png");
     foreground->loadTex("res/Ground.png");
+    bird->loadTex();
     
     // Create pipe objects first to prevent reallocation
     for (int i = 0; i < 2; i++)
@@ -109,8 +110,6 @@ void Game::init()
         pipes[i].loadTex();
         pipes[i].setX(x);
     }
-
-    bird->loadTex();
 
     // Load the Font
     fontSize = 60;
@@ -208,7 +207,7 @@ void Game::run()
     }
 
     if (gameState == Play || gameState == GameOver)
-        RenderScore(scoreTex);
+        renderScore(scoreTex);
 
     SDL_RenderPresent(renderer);
 }
@@ -285,7 +284,7 @@ void Game::updateScoreTextures(SDL_Texture* &scoreTex)
     SDL_FreeSurface(score_surface);
 }
 
-void Game::RenderScore(SDL_Texture* scoreTex)
+void Game::renderScore(SDL_Texture* scoreTex)
 {
     SDL_Rect score_Rect;
     SDL_QueryTexture(scoreTex, NULL, NULL, &score_Rect.w, &score_Rect.h);

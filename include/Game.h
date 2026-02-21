@@ -24,7 +24,7 @@ class Game{
     void init();
     void run();
     void updateScoreTextures(SDL_Texture* &scoreTex);
-    void RenderScore(SDL_Texture* scoreTex);
+    void renderScore(SDL_Texture* scoreTex);
     void shutdown();
 
     bool isRunning();
